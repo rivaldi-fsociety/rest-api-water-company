@@ -6,6 +6,7 @@ import Meteran from 'App/Models/Meteran'
 import axios from 'axios'
 import Database from '@ioc:Adonis/Lucid/Database'
 import ComplaintHandling from 'App/Models/ComplaintHandling'
+import Application from '@ioc:Adonis/Core/Application'
 
 const token = 'AAPKcc5ce8e2db1a4a5095e01202283081afMLj6vXPHKN7kYLr6BywR5rZQesf2QwhH_TMLnGgF--Zh56KmG_0OEMi07i8Ya1yF'
 
@@ -28,6 +29,18 @@ export default class ComplainingSubmissionsController {
         try {
             const user = await auth.use('jwt').authenticate()
 
+            const imageSchema = schema.create({
+                upload_image: schema.file({
+                    size: '2mb',
+                    extnames: ['jpg', 'jpeg'],
+                }),
+            })
+
+            const payload = await request.validate({ schema: imageSchema })
+
+            await payload.upload_image.move(Application.tmpPath('uploads'))
+            const fileName = payload.upload_image.fileName;
+
             const validationIssueSchema = schema.create({
                 complaint_name: schema.string({ trim: true }, [
                     rules.maxLength(50)
@@ -44,9 +57,6 @@ export default class ComplainingSubmissionsController {
             })
 
             const validationImageSchema = schema.create({
-                filename: schema.string({ trim: true }, [
-                    rules.maxLength(50)
-                ]),
                 is_primary: schema.boolean()
             })
 
@@ -74,8 +84,6 @@ export default class ComplainingSubmissionsController {
             const validatedImage = await request.validate({
                 schema: validationImageSchema,
                 messages: {
-                    'filename.required': 'File Name is Required',
-                    'filename.maxLength': 'File Name length cannot exceed 50 character',
                     'is_primary.required': 'Status Images is Required',
                 }
             })
@@ -102,6 +110,7 @@ export default class ComplainingSubmissionsController {
                 /** Insert Image */
                 const newImage = new ComplaintImage()
                 newImage.$attributes = validatedImage
+                newImage.filename = fileName ? fileName : '-'
                 newImage.createdBy = user.id
                 
                 newImage.useTransaction(trx)
@@ -138,7 +147,7 @@ export default class ComplainingSubmissionsController {
                 complaintHandling.useTransaction(trx)
                 await complaintHandling.save()
 
-                trx.commit()
+                await trx.commit()
                 return {
                     issue: newIssue,
                     meteran: newMeteran,
