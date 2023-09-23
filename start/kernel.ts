@@ -24,6 +24,7 @@ Server.middleware.register([
   () => import('@ioc:Adonis/Core/BodyParser'),
   // () => import('Adonis/Addons/ShieldMiddleware'),
   () => import('App/Middleware/SilentAuth'),
+  () => import('App/Middleware/Rbac')
 ])
 
 /*
@@ -44,5 +45,6 @@ Server.middleware.register([
 */
 Server.middleware.registerNamed({
   auth:'App/Middleware/Auth',
-  guest:'App/Middleware/Guest'
+  guest:'App/Middleware/Guest',
+  rbac: 'App/Middleware/Rbac'
 })

@@ -20,6 +20,15 @@ export default class Account extends BaseModel {
   @column.dateTime()
   public deleted_at: DateTime
 
+  @column({ columnName: 'created_by' })
+  public createdBy: number
+
+  @column({ columnName: 'updated_by' })
+  public updatedBy: number
+
+  @column({ columnName: 'deleted_by' })
+  public deletedBy: number
+
   @column()
   public is_active: boolean
 

@@ -1,13 +1,13 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ComplaintHandling from 'App/Models/ComplaintHandling'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
-import Officer from 'App/Models/Officer'
+import User from 'App/Models/User'
 
 export default class ComplaintHandlingsController {
 
     public async index({ response }: HttpContextContract)
     {
-        const complaintHandling = await ComplaintHandling.query().where('is_active', '=', true).orderBy('id', 'desc').preload('officer').preload('complaint_issue').preload('complaint_status')
+        const complaintHandling = await ComplaintHandling.query().where('is_active', '=', true).orderBy('id', 'desc').preload('user').preload('complaint_issue').preload('complaint_status')
 
         return response.status(200).json(complaintHandling)
     }
@@ -39,7 +39,7 @@ export default class ComplaintHandlingsController {
                 }
             })
 
-            const officerData = await Officer.query().where('is_active', '=', true).andWhere('id', '=', validatedData.officer_id).first()
+            const officerData = await User.query().where('is_active', '=', true).andWhere('id', '=', validatedData.officer_id).andWhere('is_officer', true).first()
             if(!officerData){
                 return response.badRequest({
                     error: `Officer Not Found.`
@@ -53,7 +53,7 @@ export default class ComplaintHandlingsController {
                 })
             }
 
-            data.officerId = validatedData.officer_id
+            data.userId = validatedData.officer_id
             data.complaintStatusId = validatedData.status_id
             if(validatedData.notes){
                 data.notes = validatedData.notes
