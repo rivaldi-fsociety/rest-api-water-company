@@ -102,6 +102,7 @@ export default class ComplainingSubmissionsController {
                 /** Insert Image */
                 const newImage = new ComplaintImage()
                 newImage.$attributes = validatedImage
+                newImage.createdBy = user.id
                 
                 newImage.useTransaction(trx)
                 await newImage.save()
@@ -112,6 +113,7 @@ export default class ComplainingSubmissionsController {
                 newMeteran.address = addressEsriApi
                 newMeteran.lat = latitude
                 newMeteran.long = longitude
+                newMeteran.createdBy = user.id
                 
                 newMeteran.useTransaction(trx)
                 await newMeteran.save()
@@ -122,6 +124,7 @@ export default class ComplainingSubmissionsController {
                 newIssue.user_id = user.id
                 newIssue.images_id = newImage.id
                 newIssue.meteran_id = newMeteran.id
+                newIssue.createdBy = user.id
                 
                 newIssue.useTransaction(trx)
                 await newIssue.save()
@@ -131,7 +134,6 @@ export default class ComplainingSubmissionsController {
                 complaintHandling.complaintIssueId = newIssue.id
                 complaintHandling.complaintStatusId = 1
                 complaintHandling.createdBy = user.id
-                complaintHandling.updatedBy = user.id
 
                 complaintHandling.useTransaction(trx)
                 await complaintHandling.save()

@@ -61,7 +61,7 @@ export default class AuthController {
                 const newUser = new User()
                 newUser.$attributes = validatedUser
                 newUser.accountId = newAccount.id
-                newUser.roleId = 1
+                newUser.roleId = 2
                 
                 newUser.useTransaction(trx)
                 const user = await newUser.save()

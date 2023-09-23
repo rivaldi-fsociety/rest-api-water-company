@@ -1,22 +1,23 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Account from 'App/Models/Account'
-import Officer from 'App/Models/Officer'
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import Role from 'App/Models/Role'
 import Database from '@ioc:Adonis/Lucid/Database'
+import User from 'App/Models/User'
 
 export default class OfficersController {
 
     public async index({ response }: HttpContextContract)
     {
-        const officer = await Officer.query().where('is_active', '=', true).orderBy('id', 'desc').preload('account').preload('role')
+        const officer = await User.query().where('is_active', '=', true).andWhereIn('roleId', [3,4,5,6]).orderBy('id', 'desc').preload('account').preload('role')
 
         return response.status(200).json(officer)
     }
 
-    public async store({ request, response }: HttpContextContract)
+    public async store({ auth, request, response }: HttpContextContract)
     {
         try {
+            const user = await auth.use('jwt').authenticate()
             const rolesData = await Role.query().where('is_active', '=', true).orderBy('id', 'desc').first()
 
             if(rolesData){
@@ -26,7 +27,7 @@ export default class OfficersController {
                     ])
                 })
     
-                const validationOfficerSchema = schema.create({
+                const validationUserSchema = schema.create({
                     username: schema.string({ trim: true }, [
                         rules.maxLength(30),
                         rules.unique({ table:"users", column:"username" })
@@ -43,7 +44,7 @@ export default class OfficersController {
 
                 const validationRoleSchema = schema.create({
                     roleId: schema.number([
-                        rules.range(2, rolesData?.id),
+                        rules.range(3, rolesData?.id),
                     ])
                 })
 
@@ -55,8 +56,8 @@ export default class OfficersController {
                     }
                 })
                 
-                const validatedOfficerSchema = await request.validate({
-                    schema: validationOfficerSchema,
+                const validatedUserSchema = await request.validate({
+                    schema: validationUserSchema,
                     messages: {
                         'username.required': 'Username is Required',
                         'username.maxLength': 'Username length cannot exceed 30 character',
@@ -71,24 +72,28 @@ export default class OfficersController {
                     schema: validationRoleSchema,
                     messages: {
                         'roleId.required': 'Role is Required',
-                        'roleId.range': 'Role ID must between 2 and ' + rolesData?.id,
+                        'roleId.range': 'Role ID must between 3 and ' + rolesData?.id,
                     }
                 })
 
                 const result = await Database.transaction(async (trx) => {
                     const newAccount = new Account()
                     newAccount.$attributes = validatedAccountSchema
+                    newAccount.createdBy = user.id
+                    newAccount.updatedBy = user.id
                     
                     newAccount.useTransaction(trx)
                     const account = await newAccount.save()
     
-                    const newOfficer = new Officer()
-                    newOfficer.$attributes = validatedOfficerSchema
-                    newOfficer.accountId = newAccount.id
-                    newOfficer.roleId = validateRole.roleId
+                    const newUser = new User()
+                    newUser.$attributes = validatedUserSchema
+                    newUser.accountId = newAccount.id
+                    newUser.roleId = validateRole.roleId
+                    newUser.createdBy = user.id
+                    newUser.is_officer = true
                     
-                    newOfficer.useTransaction(trx)
-                    const officer = await newOfficer.save()
+                    newUser.useTransaction(trx)
+                    const officer = await newUser.save()
     
                     trx.commit()
                     return {

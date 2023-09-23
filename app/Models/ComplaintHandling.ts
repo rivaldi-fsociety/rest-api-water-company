@@ -1,8 +1,9 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import ComplaintIssue from './ComplaintIssue'
-import Officer from './Officer'
+// import Officer from './Officer'
 import ComplaintStatus from './ComplaintStatus'
+import User from './User'
 
 export default class ComplaintHandling extends BaseModel {
   @column({ isPrimary: true })
@@ -14,11 +15,11 @@ export default class ComplaintHandling extends BaseModel {
   @belongsTo(() => ComplaintIssue)
   public complaint_issue: BelongsTo<typeof ComplaintIssue>
 
-  @column({ columnName: 'officer_id' })
-  public officerId: number
+  @column({ columnName: 'user_id' })
+  public userId: number
 
-  @belongsTo(() => Officer)
-  public officer: BelongsTo<typeof Officer>
+  @belongsTo(() => User)
+  public user: BelongsTo<typeof User>
 
   @column({ columnName: 'status_id' })
   public complaintStatusId: number
