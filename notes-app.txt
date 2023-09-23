@@ -8,5 +8,5 @@
 8. pahami penggunaan refresh token
 9. pahami penggunaan remember_me_token di table user dan officer
 10. pembuatan unit testing
-11. indexing table transaction
+11. indexing table transaction (DONE)
 12. design diagram architecture
