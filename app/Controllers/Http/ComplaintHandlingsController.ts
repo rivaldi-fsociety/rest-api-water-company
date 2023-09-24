@@ -12,6 +12,15 @@ export default class ComplaintHandlingsController {
         return response.status(200).json(complaintHandling)
     }
 
+    public async show({ response, params }: HttpContextContract)
+    {
+        const complaintHandling = await ComplaintHandling.query().where('is_active', '=', true).andWhere('id', params.id).preload('user').preload('complaint_issue').preload('complaint_status').first()
+        if(!complaintHandling){
+            return response.status(400).json({message:"Complaint Handlings Not Found."})
+        }
+        return response.status(200).json(complaintHandling)
+    }
+
     public async update({ auth, request, response, params }: HttpContextContract)
     {
         try {

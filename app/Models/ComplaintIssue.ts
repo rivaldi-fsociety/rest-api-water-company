@@ -10,25 +10,25 @@ export default class ComplaintIssue extends BaseModel {
   public id: number
 
   @column()
-  public user_id: number
+  public userId: number
 
   @belongsTo(() => User)
   public user: BelongsTo<typeof User>
 
   @column()
-  public category_id: number
+  public categoryId: number
 
   @belongsTo(() => Category)
   public category: BelongsTo<typeof Category>
 
-  @column()
-  public images_id: number
+  @column({ columnName: 'images_id'})
+  public complaintImageId: number
 
   @belongsTo(() => ComplaintImage)
-  public images: BelongsTo<typeof ComplaintImage>
+  public complaintImage: BelongsTo<typeof ComplaintImage>
 
   @column()
-  public meteran_id: number
+  public meteranId: number
 
   @belongsTo(() => Meteran)
   public meteran: BelongsTo<typeof Meteran>
