@@ -19,9 +19,9 @@ jobs:
             persist-credentials: false
             ref: ${{ github.event.inputs.checkoutRef }}
         - name: Setup Node
-          uses: action/setup-node@v2
+          uses: actions/setup-node@v3
           with:
-            node-version: 18.16.1
+            node-version: 18
         - name: Install Dependecies
           run : npm ci
         - name: Run test
