@@ -91,11 +91,11 @@ export default class AuthController {
             const user = await User.query().where('email', email).where('is_active', true).first()
 
             if(!user){
-                return response.badRequest('Email is not registered.')
+                return response.badRequest({error:'Email is not registered.'})
             }
 
             if (!(await Hash.verify(user.password, password))) {
-                return response.badRequest('Invalid Email or Password.')
+                return response.badRequest({error:'Invalid Email or Password.'})
             }
             const jwt = auth.use("jwt").generate(user)
             
