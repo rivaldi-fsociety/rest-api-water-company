@@ -1,8 +1,8 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import { Roles } from '@ioc:Adonis/Addons/Rbac'
+// import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+// import { Roles } from '@ioc:Adonis/Addons/Rbac'
 
 export default class Rbac {
-  public async handle({ response, auth }: HttpContextContract, next: () => Promise<void>, guards: string[]) {
+  // public async handle({ response, auth }: HttpContextContract, next: () => Promise<void>, guards: string[]) {
     // try {
       // return response.json({guards})
       // const roles = Roles
@@ -19,9 +19,9 @@ export default class Rbac {
     //   }
     //   // return response.json({roles:roles, user:user})
     //   // // code for middleware goes here. ABOVE THE NEXT CALL
-      await next()
+      // await next()
     // } catch (error) {
       
     // }
-  }
+  // }
 }
