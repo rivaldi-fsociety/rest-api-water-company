@@ -1,12 +1,12 @@
 1. created at masih kebentuk walaupun UPDATE (DONE)
 2. perbaikan UML diagram solution mengikuti apps (DONE)
 3. pahami konsep penggunaan UUID
-4. lengkapi end point yg sudah tersedia di routes tapi belum dibuat di controller
+4. lengkapi end point yg sudah tersedia di routes tapi belum dibuat di controller (ON PROGRESS)
 5. delete table api_tokens (DONE)
 6. upload foto lewat postman dan get nama file foto (DONE)
 7. normalisasi tabel (penambahan created_by, updated_by, deleted_by) (DONE)
 8. pahami penggunaan refresh token
 9. pahami penggunaan remember_me_token di table user dan officer
-10. pembuatan unit testing (ON PROGRESS)
+10. pembuatan unit testing (FAILED)
 11. indexing table transaction (DONE)
 12. design diagram architecture (DONE)
